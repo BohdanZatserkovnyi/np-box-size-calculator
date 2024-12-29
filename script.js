@@ -1,6 +1,20 @@
 let boxes = JSON.parse(localStorage.getItem('boxes')) || [
     { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
     { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
+    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
+    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
+    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
+    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
+    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
+    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
+    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
+    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
+    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
+    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
+    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
+    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
+    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
+    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
     { name: 'Small Box', code: 'SML003', length: 15, width: 10, height: 5 }
 ];
 
