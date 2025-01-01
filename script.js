@@ -1,21 +1,22 @@
 let boxes = JSON.parse(localStorage.getItem('boxes')) || [
-    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
-    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
-    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
-    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
-    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
-    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
-    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
-    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
-    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
-    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
-    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
-    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
-    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
-    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
-    { name: 'Standard Box', code: 'STD001', length: 20, width: 15, height: 10 },
-    { name: 'Large Box', code: 'LRG002', length: 40, width: 30, height: 20 },
-    { name: 'Small Box', code: 'SML003', length: 15, width: 10, height: 5 }
+    {name: 'ноут', code: '4', length: 53.5, width: 38, height: 7.5},
+    {name: '0.5', code: '05', length: 17, width: 12, height: 9},
+    {name: '0.5 пл', code: '55', length: 24, width: 17, height: 4},
+    {name: '1', code: '1', length: 24, width: 17, height: 9},
+    {name: '1 пл', code: '11', length: 34, width: 24, height: 4},
+    {name: '2', code: '2', length: 34, width: 24, height: 9},
+    {name: '2 кв', code: '-', length: 24, width: 20, height: 16},
+    {name: '3', code: '3', length: 24, width: 24, height: 20},
+    {name: '3 пл', code: '-', length: 34, width: 24, height: 14},
+    {name: '5', code: '5', length: 40, width: 24, height: 20},
+    {name: '10', code: '10', length: 40, width: 34, height: 28.5},
+    {name: '10 пл', code: '-', length: 80, width: 24, height: 20},
+    {name: '15', code: '15', length: 60, width: 35, height: 28.5},
+    {name: '20', code: '20', length: 47, width: 40, height: 42},
+    {name: '30', code: '30', length: 70, width: 40, height: 42},
+    {name: '30 дов', code: '-', length: 100, width: 40, height: 30},
+    {name: '60 туб', code: '-', length: 60, width: 16, height: 12},
+    {name: '120 туб', code: '-', length: 120, width: 14, height: 11}
 ];
 
 let selectedBoxIndex = null;
@@ -173,7 +174,7 @@ function createParcel() {
             <div class="alternative-box" id="alternative-box${parcelCounter}"></div>
             <div class="checkbox-group" style="margin-top: 0.75rem;">
                 <input type="checkbox" id="filler${parcelCounter}" onchange="updateParcelCalculations(${parcelCounter})">
-                <label for="filler${parcelCounter}">Add Filler? (+0.5 cm to total)</label>
+                <label for="filler${parcelCounter}">Add Filler? (+1 cm to total)</label>
             </div>
         </div>
     `;
@@ -192,7 +193,7 @@ function addObject(parcelId) {
         <input type="number" class="input-field" placeholder="Height (cm)" onchange="updateParcelCalculations(${parcelId})">
         <div class="checkbox-group">
             <input type="checkbox" id="fragile${objectCounter}" onchange="updateParcelCalculations(${parcelId})">
-            <label for="fragile${objectCounter}">Fragile (+0.5 cm)</label>
+            <label for="fragile${objectCounter}">Fragile (+1 cm)</label>
         </div>
         <button class="button delete" onclick="this.parentElement.remove(); updateParcelCalculations(${parcelId})">
             <i class="fas fa-times"></i>
@@ -213,7 +214,7 @@ function updateParcelCalculations(parcelId) {
             .map(input => parseFloat(input.value) || 0);
         const isFragile = object.querySelector('input[type="checkbox"]').checked;
 
-        const fragileAdd = isFragile ? 0.5 : 0;
+        const fragileAdd = isFragile ? 1 : 0;
         totalLength = Math.max(totalLength, length + fragileAdd);
         totalWidth = Math.max(totalWidth, width + fragileAdd);
         totalHeight += height + fragileAdd;
@@ -221,16 +222,16 @@ function updateParcelCalculations(parcelId) {
 
     const hasFiller = document.getElementById(`filler${parcelId}`).checked;
     if (hasFiller) {
-        totalLength += 0.5;
-        totalWidth += 0.5;
-        totalHeight += 0.5;
+        totalLength += 1;
+        totalWidth += 1;
+        totalHeight += 1;
     }
 
     document.getElementById(`parcelTotalLength${parcelId}`).textContent = totalLength.toFixed(1);
     document.getElementById(`parcelTotalWidth${parcelId}`).textContent = totalWidth.toFixed(1);
     document.getElementById(`parcelTotalHeight${parcelId}`).textContent = totalHeight.toFixed(1);
 
-    const dimensions = { length: totalLength, width: totalWidth, height: totalHeight };
+    const dimensions = {length: totalLength, width: totalWidth, height: totalHeight};
     const optimal = findOptimalBox(dimensions);
     const alternative = findAlternativeBox(optimal);
 
