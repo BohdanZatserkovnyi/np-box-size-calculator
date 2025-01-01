@@ -48,18 +48,28 @@ function switchTab(tabName) {
 function setupSwipe() {
     let touchStartX = 0;
     let touchEndX = 0;
+    let isSwiping = false;
 
     const tabsContainer = document.querySelector('.tabs');
 
     tabsContainer.addEventListener('touchstart', (event) => {
         touchStartX = event.touches[0].clientX;
-    });
+        isSwiping = true;
+    }, { passive: true });
 
     tabsContainer.addEventListener('touchmove', (event) => {
+        if (!isSwiping) return;
         touchEndX = event.touches[0].clientX;
-    });
+
+        if (Math.abs(touchEndX - touchStartX) > 10) {
+            event.preventDefault();
+        }
+    }, { passive: false });
 
     tabsContainer.addEventListener('touchend', () => {
+        if (!isSwiping) return;
+        isSwiping = false;
+
         const swipeThreshold = 50;
         const swipeDistance = touchEndX - touchStartX;
 
@@ -70,7 +80,7 @@ function setupSwipe() {
                 switchToNextTab();
             }
         }
-    });
+    }, { passive: true });
 }
 
 function switchToPreviousTab() {
@@ -265,7 +275,7 @@ function updateParcelCalculations(parcelId) {
     document.getElementById(`parcelTotalWidth${parcelId}`).textContent = totalWidth.toFixed(1);
     document.getElementById(`parcelTotalHeight${parcelId}`).textContent = totalHeight.toFixed(1);
 
-    const dimensions = {length: totalLength, width: totalWidth, height: totalHeight};
+    const dimensions = { length: totalLength, width: totalWidth, height: totalHeight };
     const optimal = findOptimalBox(dimensions);
     const alternative = findAlternativeBox(optimal);
 
