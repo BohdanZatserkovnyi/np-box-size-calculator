@@ -31,6 +31,7 @@ function saveBoxesToLocalStorage() {
 window.onload = function () {
     switchTab('calculator');
     updateInventoryList();
+    setupSwipe();
 };
 
 function switchTab(tabName) {
@@ -44,18 +45,51 @@ function switchTab(tabName) {
     document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
 }
 
-document.addEventListener('keydown', (event) => {
+function setupSwipe() {
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    const tabsContainer = document.querySelector('.tabs');
+
+    tabsContainer.addEventListener('touchstart', (event) => {
+        touchStartX = event.touches[0].clientX;
+    });
+
+    tabsContainer.addEventListener('touchmove', (event) => {
+        touchEndX = event.touches[0].clientX;
+    });
+
+    tabsContainer.addEventListener('touchend', () => {
+        const swipeThreshold = 50;
+        const swipeDistance = touchEndX - touchStartX;
+
+        if (Math.abs(swipeDistance) > swipeThreshold) {
+            if (swipeDistance > 0) {
+                switchToPreviousTab();
+            } else {
+                switchToNextTab();
+            }
+        }
+    });
+}
+
+function switchToPreviousTab() {
     const tabs = document.querySelectorAll('.tab');
     let currentIndex = Array.from(tabs).findIndex(tab => tab.classList.contains('active'));
 
-    if (event.key === 'ArrowLeft') {
-        const previousIndex = (currentIndex - 1 + tabs.length) % tabs.length;
-        tabs[previousIndex].click();
-    } else if (event.key === 'ArrowRight') {
-        const nextIndex = (currentIndex + 1) % tabs.length;
-        tabs[nextIndex].click();
+    if (currentIndex > 0) {
+        tabs[currentIndex - 1].click();
     }
-});
+}
+
+function switchToNextTab() {
+    const tabs = document.querySelectorAll('.tab');
+    let currentIndex = Array.from(tabs).findIndex(tab => tab.classList.contains('active'));
+
+    if (currentIndex < tabs.length - 1) {
+        tabs[currentIndex + 1].click();
+    }
+}
 
 function updateInventoryList() {
     const list = document.querySelector('.inventory-list');
@@ -174,7 +208,7 @@ function createParcel() {
             <div class="alternative-box" id="alternative-box${parcelCounter}"></div>
             <div class="checkbox-group" style="margin-top: 0.75rem;">
                 <input type="checkbox" id="filler${parcelCounter}" onchange="updateParcelCalculations(${parcelCounter})">
-                <label for="filler${parcelCounter}">Add Filler? (+1 cm to total)</label>
+                <label for="filler${parcelCounter}">Add Filler? (+0.5 cm to total)</label>
             </div>
         </div>
     `;
@@ -193,7 +227,7 @@ function addObject(parcelId) {
         <input type="number" class="input-field" placeholder="Height (cm)" onchange="updateParcelCalculations(${parcelId})">
         <div class="checkbox-group">
             <input type="checkbox" id="fragile${objectCounter}" onchange="updateParcelCalculations(${parcelId})">
-            <label for="fragile${objectCounter}">Fragile (+1 cm)</label>
+            <label for="fragile${objectCounter}">Fragile (+0.5 cm)</label>
         </div>
         <button class="button delete" onclick="this.parentElement.remove(); updateParcelCalculations(${parcelId})">
             <i class="fas fa-times"></i>
@@ -214,7 +248,7 @@ function updateParcelCalculations(parcelId) {
             .map(input => parseFloat(input.value) || 0);
         const isFragile = object.querySelector('input[type="checkbox"]').checked;
 
-        const fragileAdd = isFragile ? 1 : 0;
+        const fragileAdd = isFragile ? 0.5 : 0;
         totalLength = Math.max(totalLength, length + fragileAdd);
         totalWidth = Math.max(totalWidth, width + fragileAdd);
         totalHeight += height + fragileAdd;
@@ -222,9 +256,9 @@ function updateParcelCalculations(parcelId) {
 
     const hasFiller = document.getElementById(`filler${parcelId}`).checked;
     if (hasFiller) {
-        totalLength += 1;
-        totalWidth += 1;
-        totalHeight += 1;
+        totalLength += 0.5;
+        totalWidth += 0.5;
+        totalHeight += 0.5;
     }
 
     document.getElementById(`parcelTotalLength${parcelId}`).textContent = totalLength.toFixed(1);
