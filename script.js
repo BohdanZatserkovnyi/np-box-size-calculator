@@ -218,7 +218,7 @@ function createParcel() {
             <div class="alternative-box" id="alternative-box${parcelCounter}"></div>
             <div class="checkbox-group" style="margin-top: 0.75rem;">
                 <input type="checkbox" id="filler${parcelCounter}" onchange="updateParcelCalculations(${parcelCounter})">
-                <label for="filler${parcelCounter}">Add Filler? (+0.5 cm to total)</label>
+                <label for="filler${parcelCounter}">Add Filler? (+1 cm to total)</label>
             </div>
         </div>
     `;
@@ -237,7 +237,7 @@ function addObject(parcelId) {
         <input type="number" class="input-field" placeholder="Height (cm)" onchange="updateParcelCalculations(${parcelId})">
         <div class="checkbox-group">
             <input type="checkbox" id="fragile${objectCounter}" onchange="updateParcelCalculations(${parcelId})">
-            <label for="fragile${objectCounter}">Fragile (+0.5 cm)</label>
+            <label for="fragile${objectCounter}">Fragile (+1 cm)</label>
         </div>
         <button class="button delete" onclick="this.parentElement.remove(); updateParcelCalculations(${parcelId})">
             <i class="fas fa-times"></i>
@@ -258,7 +258,7 @@ function updateParcelCalculations(parcelId) {
             .map(input => parseFloat(input.value) || 0);
         const isFragile = object.querySelector('input[type="checkbox"]').checked;
 
-        const fragileAdd = isFragile ? 0.5 : 0;
+        const fragileAdd = isFragile ? 1 : 0;
         totalLength = Math.max(totalLength, length + fragileAdd);
         totalWidth = Math.max(totalWidth, width + fragileAdd);
         totalHeight += height + fragileAdd;
@@ -266,9 +266,9 @@ function updateParcelCalculations(parcelId) {
 
     const hasFiller = document.getElementById(`filler${parcelId}`).checked;
     if (hasFiller) {
-        totalLength += 0.5;
-        totalWidth += 0.5;
-        totalHeight += 0.5;
+        totalLength += 1;
+        totalWidth += 1;
+        totalHeight += 1;
     }
 
     document.getElementById(`parcelTotalLength${parcelId}`).textContent = totalLength.toFixed(1);
